@@ -31,7 +31,6 @@ def dteps(nrho_alf, mass_alf, chrg_alf, temp_alf, b0, kperp, kprll, nperp, nprll
     lmbdr_alf = 1.0 / lmbd_alf
     w1_alf = (omgp_alf / omg) ** 2 * np.exp(-lmbd_alf) * x0_alf
     w2_alf = (w1_alf * omg / omgc_alf) * (vth_alf / scipy.constants.speed_of_light) ** 2 * x0_alf
-    
     te_xx_alf = np.zeros(nalf, dtype = complex)
     te_xy_alf = np.zeros(nalf, dtype = complex)
     te_xz_alf = np.zeros(nalf, dtype = complex)
