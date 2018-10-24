@@ -1,2 +1,4 @@
-# icrhhf_py3
-Dielectric Tensors for Maxwellian Plasma (Python-3)
+# icrhhf
+Dielectric Tensors for Maxwellian Plasma
+in C++, Fortran-95 and Python-3
+Work still in progress...
