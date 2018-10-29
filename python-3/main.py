@@ -21,13 +21,13 @@ def pdispersion(z):
         Plasma Dispersion Function '''
     if np.abs(z) > 26.6415:
         pd = 0
-        # Series upto z**15 is enough for 64-bit precision and z>26 or z<-26
-        # Two more coefficients (for z**17 and z**19) are mentioned but not used
+        # Series upto z**-15 is enough for 64-bit precision and (z>26 or z<-26)
+        # Two more coefficients (for z**-17 and z**-19) are mentioned but not used
         # Further series can be explored on http://mathworld.wolfram.com/Erfi.html and OEIS A001147/A000079
         cfs = (1.0, 0.5, 0.75, 1.875, 6.5625, 29.53125, 162.421875, 1055.7421875, 7918.06640625, 67303.564453125)
         for i in range(8):
             pd -= cfs[i] / (z ** (2 * i + 1))
-        pd = pd + 0.0j # 2.0 * np.sqrt(np.pi) * np.exp(- z * z) * 1j    # commented part is what there should be instead of 0j, but its value is smaller than 1.0e-300 for z>26 or z<-26
+        pd = pd + 0.0j # 2.0j * np.sqrt(np.pi) * np.exp(- z * z)    # commented part is what there should be instead of 0j, but its value is smaller than 1.0e-300 for z>26 or z<-26
     else:
         pd = -np.sqrt(np.pi) * np.exp(-z * z) * (scipy.special.erfi(z) - 1.0j)
     return pd
@@ -126,4 +126,36 @@ kperp = 0.05
 kprll = 0.05
 omg = 2.11985e9
 nmax = 1
-print(dteps(nrho_alf, mass_alf, chrg_alf, temp_alf, b0, kperp, kprll, omg, nmax))
+xx = np.linspace(-50, 50, 100)
+s = []
+d = []
+p = []
+for x in xx:
+    epss = dteps(nrho_alf, mass_alf, chrg_alf, temp_alf, b0, kperp, kprll, x * (kprll * np.sqrt(2.0 * (temp_alf[0]/8.61732814974056e-8) * bltz_k / mass_elec)), nmax)
+    s.append(epss[0][0])
+    d.append(epss[0][1] * 1j)
+    p.append(epss[2][2])
+
+plt.clf()
+plt.plot(xx, np.real(s))
+plt.xlabel('x (cm)')
+plt.ylabel('S')
+plt.savefig('s.png', bbox_inches='tight')
+
+plt.clf()
+plt.plot(xx, np.real(s) + np.real(d))
+plt.xlabel('x (cm)')
+plt.ylabel('R')
+plt.savefig('r.png', bbox_inches='tight')
+
+plt.clf()
+plt.plot(xx, np.real(s) - np.real(d))
+plt.xlabel('x (cm)')
+plt.ylabel('L')
+plt.savefig('l.png', bbox_inches='tight')
+
+plt.clf()
+plt.plot(xx, np.real(p))
+plt.xlabel('x (cm)')
+plt.ylabel('P')
+plt.savefig('p.png', bbox_inches='tight')
